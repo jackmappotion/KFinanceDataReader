@@ -1,0 +1,9 @@
+private.py
+setup.py
+
+__pycache__/
+.DS_Store
+
+KFinanceDataReader.egg-info/
+build/
+dist/
