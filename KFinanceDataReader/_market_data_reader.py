@@ -54,7 +54,7 @@ class MarketDataReader:
                 kospi_buy_trade_df.loc[:, ['금융투자', '보험', '투신', '사모', '은행', '기타금융', '기타법인']]
                 .sum(axis=1)
                 .rename('기관'),
-                kospi_buy_trade_df.loc[:, ['외국인', '기타외국인']].sum(axis=1).rename('기관'),
+                kospi_buy_trade_df.loc[:, ['외국인', '기타외국인']].sum(axis=1).rename('외국인'),
                 kospi_buy_trade_df.loc[:, '연기금'],
                 kospi_buy_trade_df.loc[:, '개인'],
             ],
@@ -72,7 +72,7 @@ class MarketDataReader:
                 kospi_sell_trade_df.loc[:, ['금융투자', '보험', '투신', '사모', '은행', '기타금융', '기타법인']]
                 .sum(axis=1)
                 .rename('기관'),
-                kospi_sell_trade_df.loc[:, ['외국인', '기타외국인']].sum(axis=1).rename('기관'),
+                kospi_sell_trade_df.loc[:, ['외국인', '기타외국인']].sum(axis=1).rename('외국인'),
                 kospi_sell_trade_df.loc[:, '연기금'],
                 kospi_sell_trade_df.loc[:, '개인'],
             ],
