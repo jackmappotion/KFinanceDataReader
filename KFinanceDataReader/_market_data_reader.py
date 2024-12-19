@@ -183,3 +183,47 @@ class MarketDataReader:
         ohlcv_df.columns = [col.lower() for col in ohlcv_df.columns]
         ohlcv_df.index.name = 'date'
         return ohlcv_df
+
+    def get_stock_trader_df(self, stock_code, start_date, end_date):
+        """
+        date, individual, foreign, corp
+        """
+        stock_buy_trade_df = self.krx_data_reader.trader_data_reader.get_stock_buy_trade_df(stock_code, start_date, end_date)
+        stock_buy_trade_df = stock_buy_trade_df.set_index('날짜')
+        stock_buy_trade_df = stock_buy_trade_df.map(lambda x: x.replace(',', '')).astype(float)
+        buy_trade_df = pd.concat(
+            [
+                stock_buy_trade_df.loc[:, '전체'],
+                stock_buy_trade_df.loc[:, ['금융투자', '보험', '투신', '사모', '은행', '기타금융', '기타법인']]
+                .sum(axis=1)
+                .rename('기관'),
+                stock_buy_trade_df.loc[:, ['외국인', '기타외국인']].sum(axis=1).rename('외국인'),
+                stock_buy_trade_df.loc[:, '연기금'],
+                stock_buy_trade_df.loc[:, '개인'],
+            ],
+            axis=1,
+        )
+        buy_trade_df.columns = [col + '_매수' for col in buy_trade_df.columns]
+        ###
+        stock_sell_trade_df = self.krx_data_reader.trader_data_reader.get_stock_sell_trade_df(stock_code, start_date, end_date)
+        stock_sell_trade_df = stock_sell_trade_df.set_index('날짜')
+        stock_sell_trade_df = stock_sell_trade_df.map(lambda x: x.replace(',', '')).astype(float)
+
+        sell_trade_df = pd.concat(
+            [
+                stock_sell_trade_df.loc[:, '전체'],
+                stock_sell_trade_df.loc[:, ['금융투자', '보험', '투신', '사모', '은행', '기타금융', '기타법인']]
+                .sum(axis=1)
+                .rename('기관'),
+                stock_sell_trade_df.loc[:, ['외국인', '기타외국인']].sum(axis=1).rename('외국인'),
+                stock_sell_trade_df.loc[:, '연기금'],
+                stock_sell_trade_df.loc[:, '개인'],
+            ],
+            axis=1,
+        )
+        sell_trade_df.columns = [col + '_매도' for col in sell_trade_df.columns]
+        stock_trade_df = pd.concat([buy_trade_df, sell_trade_df], axis=1)
+        stock_trade_df.index.name = 'date'
+
+        stock_trade_df.index = pd.to_datetime(stock_trade_df.index, format='%Y/%m/%d')
+        return stock_trade_df
