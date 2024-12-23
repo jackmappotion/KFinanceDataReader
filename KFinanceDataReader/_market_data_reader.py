@@ -8,6 +8,19 @@ class MarketDataReader:
         self.finance_data_reader = finance_data_reader
         self.krx_data_reader = KrxDataReader()
 
+    def get_daily_info_df(self):
+        daily_info_df = self.finance_data_reader.StockListing('KRX')
+        rename_dict = {
+            'Code': 'stock_code',
+            'Name': 'stock_name',
+            'Market': 'market',
+            'Stocks': 'stock_shares',
+            'Marcap': 'marcap',
+        }
+        daily_info_df = daily_info_df.rename(columns=rename_dict)
+        daily_info_df = daily_info_df.loc[:, list(rename_dict.values())]
+        return daily_info_df
+
     def get_kospi_info_df(self):
         """
         stock_name, stock_code, sector
