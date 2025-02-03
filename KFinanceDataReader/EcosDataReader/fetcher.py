@@ -27,7 +27,7 @@ class EcosFetcher:
     def _get_resp(self, params):
         query_params = '/'.join(params.values())
         url = f"{self.base_url}/{query_params}"
-        resp = requests.get(url, params=params)
+        resp = requests.get(url)
         return resp
 
     def fetch_stat_code_df(self):
